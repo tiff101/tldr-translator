@@ -33,41 +33,7 @@ Fundraising
 (3) prompt engineering side of things
 
 """
-import os
-import api
-from groq import Groq
-
-client = Groq(
-    api_key=os.environ.get("GROQ_API_KEY"),
-)
-message_log = []
-bookshelf = []
-
-class Book:
-    def __init__(self, title: str, summary: str):
-        self.title = title
-        self.summary = summary
-        self.cover = 'empty.jpg'
-        # todo? date_added
-    
-
-def call_grok(message, **kwargs):
-    chat_completion = client.chat.completions.create(
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a language expert who has spent the last thirty years researching literature, the arts, physical sciences and world history. You have amassed a wide range of knowledge across multiple domains, and are an excellent and empathetic communicator to any audience, whether it be a domain expert or layman. Your colleagues describe you as a polymath."
-            },
-            {
-                "role": "user",
-                "content": message,
-            }
-        ],
-        model="llama3-8b-8192",
-        temperature=kwargs.get("temp", 0.5)  # allow the 'user' to control creativity of the output on the call. Default to 0.5 if not specified
-    )
-    message_content = chat_completion.choices[0].message.content
-    message_log.append(message_content)
+from api import *
 
 
 

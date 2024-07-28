@@ -1,6 +1,41 @@
 import requests
 import os
 import json
+from groq import Groq
+
+client = Groq(
+    api_key=os.environ.get("GROQ_API_KEY"),
+)
+message_log = []
+bookshelf = []
+
+class Book:
+    def __init__(self, title: str, summary: str, **kwargs):
+        self.title = title
+        self.summary = summary
+        self.cover = kwargs.get('cover', None)
+        self.headline = kwargs.get('headline', 'This is a book')
+        # todo? date_added
+    
+
+def call_grok(message, **kwargs):
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a language expert who has spent the last thirty years researching literature, the arts, physical sciences and world history. You have amassed a wide range of knowledge across multiple domains, and are an excellent and empathetic communicator to any audience, whether it be a domain expert or layman. Your colleagues describe you as a polymath."
+            },
+            {
+                "role": "user",
+                "content": message,
+            }
+        ],
+        model="llama3-8b-8192",
+        temperature=kwargs.get("temp", 0.5)  # allow the 'user' to control creativity of the output on the call. Default to 0.5 if not specified
+    )
+    message_content = chat_completion.choices[0].message.content
+    message_log.append(message_content)
+    return message_content
 
 
 def get_book_cover(book_title: str):
@@ -17,7 +52,7 @@ def get_book_cover(book_title: str):
         print(json_content['success'])
         imgs = json_content.get('image_urls')
         print(imgs)
-        return imgs[0]  # TODO: THE IMG CHECK IS TAKING TOO LONG AND NOT WORKING LOL. FIX IT 
+        return imgs[2]  # TODO: THE IMG CHECK IS TAKING TOO LONG AND NOT WORKING LOL. FIX IT 
 
         # NOW FOR EACH OF THESE, UNTIL WE STOP, I KINDA WANT TO CHECK WHETHER THE COVER IS CORRECT?!?!? :D
         # we know the first one is trash... so that we actually have to keep going.
