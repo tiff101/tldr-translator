@@ -47,7 +47,7 @@ def main():
 
         # get book + book cover
         current_book = Book(title=choice, summary=message_log[-1])
-        current_book.cover = api.get_book_cover(choice)  # this is a placeholder for the actual image retrieval function
+        current_book.cover = get_book_cover(choice)  # this is a placeholder for the actual image retrieval function
         bookshelf.append(current_book)
 
         # call_grok(f"Now I'd like you to summarise your previous output yet again into some conversational talking points in a friendly and approachable manner, as if you were talking to a {choice2}. Work with {message_log[-1]}", temp=1)

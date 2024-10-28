@@ -1,10 +1,10 @@
 import requests
-import os
+import streamlit as st
 import json
 from groq import Groq
 
 client = Groq(
-    api_key=os.environ.get("GROQ_API_KEY"),
+    api_key=st.secrets["GROQ_API_KEY"],
 )
 message_log = []
 bookshelf = []
@@ -42,7 +42,7 @@ def get_book_cover(book_title: str):
     url = "https://api.jigsawstack.com/v1/web/search"
     querystring = {"query": f"Find the book cover for {book_title}"}
     headers = {"content-type": "application/json",
-               "x-api-key": os.environ.get("JIGSAW_API_KEY")}
+               "x-api-key": st.secrets["JIGSAW_API_KEY"]}
     response = requests.request(
         "GET", url, params=querystring, headers=headers)
 
@@ -79,7 +79,7 @@ def check_correct_book_cover(img_url, book_title):
         response = requests.request("POST",
                                 "https://api.jigsawstack.com/v1/vocr",
                                 data= {"url": f"{img_url}"},
-                                headers={"content-type": "application/json", "x-api-key": os.environ.get("JIGSAW_API_KEY")}
+                                headers={"content-type": "application/json", "x-api-key": st.secrets["JIGSAW_API_KEY"]}
                                 )
         print('48', response)
 
@@ -93,7 +93,7 @@ def check_correct_book_cover(img_url, book_title):
         response = requests.request("POST",
                                 "https://api.jigsawstack.com/v1/ai/summary",
                                 data= {"text": f"Can you determine if the book title {book_title} is in this {context}? Respond with True or False"},
-                                headers= {"content-type": "application/json", "x-api-key": os.environ.get("JIGSAW_API_KEY")}
+                                headers= {"content-type": "application/json", "x-api-key": st.secrets["JIGSAW_API_KEY"]}
                                 )
         if book_title in json_content['context']:
             return True
